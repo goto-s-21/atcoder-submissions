@@ -10,6 +10,8 @@ on:
 jobs:
   fetch-and-commit:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       # 1. リポジトリのコードをチェックアウトする
       - name: Checkout repository
