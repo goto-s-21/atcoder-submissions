@@ -1,0 +1,49 @@
+name: Fetch AtCoder Submissions
+
+on:
+  schedule:
+    # 毎日UTCの0時（日本時間午前9時）に実行
+    - cron: '0 0 * * *'
+  # 手動でも実行できるようにする
+  workflow_dispatch:
+
+jobs:
+  fetch-and-commit:
+    runs-on: ubuntu-latest
+    steps:
+      # 1. リポジトリのコードをチェックアウトする
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Pythonの環境を準備する
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      # 3. 必要なライブラリをインストールする
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      # 4. Pythonスクリプトを実行して提出コードを取得する
+      - name: Run fetch script
+        env:
+          # ↓↓↓ あなたのAtCoderユーザーIDに書き換えてください ↓↓↓
+          ATCODER_USER_ID: 'sat_1'
+          # ↑↑↑ あなたのAtCoderユーザーIDに書き換えてください ↑↑↑
+          ATCODER_SESSION: ${{ secrets.ATCODER_SESSION }}
+        run: python fetch_submissions.py
+
+      # 5. 変更があればコミット＆プッシュする
+      - name: Commit and push changes
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add .
+          # 変更があった場合のみコミット＆プッシュ
+          if ! git diff --cached --quiet; then
+            git commit -m "Update submissions"
+            git push
+          else
+            echo "No changes to commit"
+          fi
