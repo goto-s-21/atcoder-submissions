@@ -8,31 +8,35 @@ on:
 jobs:
   fetch-and-commit:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
+    permissions:      # ★ここから2行追加
+      contents: write   # ★
     steps:
+      # 1. リポジトリのコードをチェックアウトする
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # 2. Pythonの環境を準備する
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
 
+      # 3. 必要なライブラリをインストールする
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+      # 4. Pythonスクリプトを実行して提出コードを取得する
       - name: Run fetch script
         env:
-          ATCODER_USER_ID: 'goto-s-21'
+          ATCODER_USER_ID: 'goto-s-21' 
           ATCODER_SESSION: ${{ secrets.ATCODER_SESSION }}
         run: python fetch_submissions.py
 
-      # ↓↓↓ ここの2行を変更 ↓↓↓
+      # 5. 変更があればコミット＆プッシュする
       - name: Commit and push changes
         run: |
-          git config --global user.name 'goto-s-21'
-          git config --global user.email '232183151+goto-s-21@users.noreply.github.com'
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           git add .
           if ! git diff --cached --quiet; then
             git commit -m "Update submissions"
