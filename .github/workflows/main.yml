@@ -28,7 +28,7 @@ jobs:
       # 4. Pythonスクリプトを実行して提出コードを取得する
       - name: Run fetch script
         env:
-          ATCODER_USER_ID: 'goto-s-21' 
+          ATCODER_USER_ID: 'sat_1' 
           ATCODER_SESSION: ${{ secrets.ATCODER_SESSION }}
         run: python fetch_submissions.py
 
