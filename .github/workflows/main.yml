@@ -1,19 +1,15 @@
 name: Fetch AtCoder Submissions
 
 on:
-  # 毎日UTCの0時（日本時間午前9時）に定期実行
   schedule:
     - cron: '0 0 * * *'
-  # GitHubのActionsタブから手動で実行できるようにする
   workflow_dispatch:
 
 jobs:
   fetch-and-commit:
     runs-on: ubuntu-latest
-    
     permissions:
       contents: write
-      
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -36,11 +32,7 @@ jobs:
         run: |
           git config --global user.name 'goto-s-21'
           git config --global user.email 'mone08sh21@gmail.com'
-          
-          # 変更されたファイルをすべて追加
           git add .
-          
-          # もし変更があった場合のみコミットとプッシュを実行する
           if ! git diff --cached --quiet; then
             git commit -m "Update submissions"
             git push
